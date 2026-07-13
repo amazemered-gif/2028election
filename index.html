@@ -335,8 +335,8 @@
     const right = anchorRightViewport + (DOCK_RIGHT - anchorRightViewport) * progress;
     const naturalTop = anchorTopPage - y;
     const top = Math.max(DOCK_TOP, naturalTop);
-    const radius = 10 + (size / 2 - 10) * progress;
-
+    const radius = size / 2;
+   
     img.style.width = size + 'px';
     img.style.height = size + 'px';
     img.style.top = top + 'px';
