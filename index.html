@@ -16,10 +16,11 @@
 
   /* Who can vote */
   .header{padding-right:110px;min-height:94px}
-  .vote-layout{display:block}
+  .vote-layout{display:grid;grid-template-columns:1fr 140px;gap:20px;align-items:start}
   .vote-text{font-size:15px;color:rgba(255,255,255,0.88);line-height:1.75}
   .vote-date{font-size:20px;font-weight:700;color:#fff;display:inline-block;margin:2px 0}
-  .hero-img{position:fixed;top:7px;right:16px;width:80px;height:80px;z-index:110;border-radius:50%;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.4);transition:width 0.2s ease,height 0.2s ease,top 0.2s ease}
+  .hero-anchor{width:140px;height:140px}
+  .hero-img{position:fixed;z-index:110;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.4)}
   .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
 
   /* Why section */
@@ -94,10 +95,12 @@
       <span class="vote-date">18th April 2026</span><br>
       are eligible to vote in this election.
     </div>
-    <div class="hero-img" id="heroImg">
-      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/desi%20png-YSHzqpPWXQToknlFXAz2i2P9TN3dbg.png" alt="Candidate portrait" />
-    </div>
+    <div class="hero-anchor" id="heroAnchor"></div>
   </div>
+</div>
+
+<div class="hero-img" id="heroImg">
+  <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/desi%20png-YSHzqpPWXQToknlFXAz2i2P9TN3dbg.png" alt="Candidate portrait" />
 </div>
 
 <!-- WHY PARTICIPATING -->
@@ -306,15 +309,45 @@
 
   document.getElementById('addrInput').addEventListener('keydown', e => { if (e.key === 'Enter') findLocation(); });
 
+  /* ── Hero image scroll transition ── */
+  const SHRINK_DISTANCE = 220;   // px of scroll over which it fully shrinks & docks
+  const DOCK_TOP = 7;
+  const DOCK_RIGHT = 16;
+  const START_SIZE = 140;
+  const END_SIZE = 44;
+
+  let anchorTopPage = 0;
+  let anchorRightViewport = 0;
+
+  function measureHeroAnchor() {
+    const anchor = document.getElementById('heroAnchor');
+    const rect = anchor.getBoundingClientRect();
+    anchorTopPage = rect.top + window.scrollY;
+    anchorRightViewport = window.innerWidth - rect.right;
+  }
+
   function updateHero() {
     const img = document.getElementById('heroImg');
-    const size = Math.max(44, 80 - window.scrollY / 6);
+    const y = window.scrollY;
+    const progress = Math.min(1, Math.max(0, y / SHRINK_DISTANCE));
+
+    const size = START_SIZE + (END_SIZE - START_SIZE) * progress;
+    const right = anchorRightViewport + (DOCK_RIGHT - anchorRightViewport) * progress;
+    const naturalTop = anchorTopPage - y;
+    const top = Math.max(DOCK_TOP, naturalTop);
+    const radius = 10 + (size / 2 - 10) * progress;
+
     img.style.width = size + 'px';
     img.style.height = size + 'px';
-    img.style.top = (7 + (80 - size) / 2) + 'px';
+    img.style.top = top + 'px';
+    img.style.right = right + 'px';
+    img.style.borderRadius = radius + 'px';
   }
+
+  window.addEventListener('load', () => { measureHeroAnchor(); updateHero(); });
+  window.addEventListener('resize', () => { measureHeroAnchor(); updateHero(); });
   window.addEventListener('scroll', updateHero, { passive: true });
-  window.addEventListener('resize', updateHero);
+  measureHeroAnchor();
   updateHero();
 </script>
 </body>
