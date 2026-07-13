@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2028 Local Election — Jyväskylä</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(160deg,#6b0f1a 0%,#3a1a4a 40%,#0f1e5e 80%,#071240 100%);min-height:100vh;color:#fff}
+
+  .header{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:0.5px solid rgba(255,255,255,0.12)}
+  .header-title{font-size:16px;font-weight:500;color:#fff;letter-spacing:0.3px}
+
+  .section{background:rgba(255,255,255,0.07);margin:16px;border-radius:16px;border:0.5px solid rgba(255,255,255,0.14);padding:24px}
+  .section-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px}
+
+  /* Who can vote */
+  .vote-layout{display:grid;grid-template-columns:1fr 140px;gap:20px;align-items:start}
+  .vote-text{font-size:15px;color:rgba(255,255,255,0.88);line-height:1.75}
+  .vote-date{font-size:20px;font-weight:700;color:#fff;display:inline-block;margin:2px 0}
+  .hero-img{border-radius:10px;overflow:hidden;transition:transform 0.4s,opacity 0.4s;transform-origin:top right}
+  .hero-img img{width:100%;height:auto;display:block}
+
+  /* Why section */
+  .expand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
+  .expand-row .section-label{margin-bottom:0}
+  .expand-btn{width:30px;height:30px;border-radius:50%;border:0.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);line-height:1;transition:background 0.2s;flex-shrink:0}
+  .expand-btn:hover{background:rgba(255,255,255,0.18)}
+  .why-list{display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:max-height 0.4s ease;max-height:0;margin-top:0}
+  .why-list.open{max-height:600px;margin-top:16px}
+  .why-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.07);border-radius:10px;border:0.5px solid rgba(255,255,255,0.1)}
+  .why-num{font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);width:18px;flex-shrink:0}
+  .why-bar-track{flex:1;height:10px;background:rgba(255,255,255,0.1);border-radius:5px;overflow:hidden}
+  .why-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#5dcaa5,#378add);width:0;transition:width 0.6s ease}
+
+  /* Map section */
+  .map-row{display:flex;gap:10px;margin-bottom:14px}
+  .map-row input{flex:1;padding:10px 12px;border:0.5px solid rgba(255,255,255,0.2);border-radius:8px;font-size:14px;background:rgba(255,255,255,0.1);color:#fff}
+  .map-row input::placeholder{color:rgba(255,255,255,0.38)}
+  .map-row input:focus{outline:none;border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15)}
+  .find-btn{padding:10px 16px;border:0.5px solid rgba(255,255,255,0.25);border-radius:8px;background:rgba(255,255,255,0.12);cursor:pointer;font-size:13px;color:#fff;white-space:nowrap;transition:background 0.2s}
+  .find-btn:hover{background:rgba(255,255,255,0.22)}
+  .map-hint{font-size:13px;color:rgba(255,255,255,0.38);padding:4px 0}
+  .map-layout{display:grid;grid-template-columns:1fr 220px;gap:14px}
+  .map-frame{border-radius:12px;overflow:hidden;border:0.5px solid rgba(255,255,255,0.15);height:260px;background:rgba(0,0,0,0.3)}
+  .map-frame iframe{width:100%;height:100%;border:none;display:block}
+  .loc-sidebar{display:flex;flex-direction:column;gap:10px}
+  .loc-card{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 14px}
+  .loc-card.best{border-color:rgba(93,202,165,0.5);background:rgba(93,202,165,0.07)}
+  .nearest-tag{font-size:10px;color:#5dcaa5;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px}
+  .loc-name{font-size:13px;font-weight:500;color:#fff;margin-bottom:8px;line-height:1.35}
+  .badge{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(255,255,255,0.62);padding:3px 0}
+  .badge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .loading-text{font-size:13px;color:rgba(255,255,255,0.38);font-style:italic}
+  .api-note{font-size:11px;color:rgba(255,255,255,0.28);margin-top:12px;padding:10px 12px;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;line-height:1.6}
+  .api-note code{color:rgba(255,200,100,0.75);font-family:'Courier New',monospace}
+
+  /* Support */
+  .support-inner{text-align:center;padding:10px 0 6px}
+  .support-sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:22px}
+  .pledge-btn{padding:13px 32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;color:#fff;transition:all 0.2s}
+  .pledge-btn:hover{background:rgba(255,255,255,0.18)}
+  .pledge-btn.active{background:#22a06b;border-color:transparent;color:#fff;cursor:default}
+  .pledge-btn.active:hover{background:#22a06b}
+  .pledge-count{font-size:13px;color:rgba(255,255,255,0.4);margin-top:14px}
+
+  /* Footer */
+  .footer{background:rgba(0,0,0,0.3);margin:16px;border-radius:16px;border:0.5px solid rgba(255,255,255,0.1);padding:18px 24px;display:flex;align-items:center;gap:12px}
+  .footer-label{font-size:12px;color:rgba(255,255,255,0.38);margin-right:4px}
+  .soc{width:34px;height:34px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,0.07);transition:background 0.2s}
+  .soc:hover{background:rgba(255,255,255,0.16)}
+  .soc svg{width:15px;height:15px;fill:rgba(255,255,255,0.6)}
+
+  @media(max-width:600px){
+    .vote-layout{grid-template-columns:1fr}
+    .header{padding-right:98px;min-height:94px}
+    .hero-img{position:fixed;top:7px;right:16px;width:80px;height:80px;z-index:110;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,0.4);transition:width 0.2s ease,height 0.2s ease,top 0.2s ease}
+    .hero-img img{width:100%;height:100%;object-fit:cover}
+    .map-layout{grid-template-columns:1fr}
+    .loc-sidebar{flex-direction:row;overflow-x:auto}
+    .loc-card{min-width:180px}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">2028 Local Election — Jyväskylä</span>
+</div>
+
+<!-- WHO CAN VOTE -->
+<div class="section">
+  <div class="section-label">Who can vote?</div>
+  <div class="vote-layout">
+    <div class="vote-text">
+      Anyone who has moved to Finland before<br>
+      <span class="vote-date">18th April 2026</span><br>
+      are eligible to vote in this election.
+    </div>
+    <div class="hero-img" id="heroImg">
+      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/desi%20png-YSHzqpPWXQToknlFXAz2i2P9TN3dbg.png" alt="Candidate portrait" />
+    </div>
+  </div>
+</div>
+
+<!-- WHY PARTICIPATING -->
+<div class="section">
+  <div class="expand-row">
+    <div class="section-label">Why participate?</div>
+    <button class="expand-btn" id="expandBtn" onclick="toggleWhy()" aria-expanded="false" aria-controls="whyList">+</button>
+  </div>
+  <div class="why-list" id="whyList">
+    <div class="why-item">
+      <span class="why-num">1. Rights of delivery riders. </span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Wolt</div>
+        <div class="why-bar-track"><div class="why-bar-fill" data-width="92"></div></div>
+      </div>
+    </div>
+    <div class="why-item">
+      <span class="why-num">2. Integration speed up </span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Kototumis</div>
+        <div class="why-bar-track"><div class="why-bar-fill" data-width="76"></div></div>
+      </div>
+    </div>
+    <div class="why-item">
+      <span class="why-num">3. increase day care and education for kids </span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Support for International Residents</div>
+        <div class="why-bar-track"><div class="why-bar-fill" data-width="84"></div></div>
+      </div>
+    </div>
+    <div class="why-item">
+      <span class="why-num">4.</span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Affordable Housing Initiatives</div>
+        <div class="why-bar-track"><div class="why-bar-fill" data-width="66"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHERE TO VOTE -->
+<div class="section">
+  <div class="section-label">Where can I vote?</div>
+  <div class="map-row">
+    <input type="text" id="addrInput" placeholder="Type your address in Jyväskylä..." />
+    <button class="find-btn" onclick="findLocation()">Find</button>
+  </div>
+  <div id="mapHint" class="map-hint">Enter your address to find your nearest polling station.</div>
+  <div id="mapContent" style="display:none">
+    <div class="map-layout">
+      <div class="map-frame">
+        <iframe id="mapIframe" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="loc-sidebar" id="locSidebar">
+        <div class="loading-text">Calculating distances...</div>
+      </div>
+    </div>
+    <div class="api-note">
+      To enable live distances: replace <code>YOUR_API_KEY</code> in the &lt;script&gt; with your Google Maps API key (requires Distance Matrix API enabled).
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT -->
+<div class="section">
+  <div class="section-label">Show us your support</div>
+  <div class="support-inner">
+    <div class="support-sub">Click the button to show your support</div>
+    <button class="pledge-btn" id="pledgeBtn" onclick="pledge()">I will vote for you</button>
+    <div class="pledge-count" id="pledgeCount"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span class="footer-label">Socials</span>
+  <div class="soc" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
+  <div class="soc" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+  <div class="soc" title="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+  <div class="soc" title="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.83 1.56V6.81a4.85 4.85 0 01-1.06-.12z"/></svg></div>
+</div>
+
+<script>
+  const API_KEY = 'YOUR_API_KEY';
+  const BASE_COUNT = 50; // starting count
+  const STORAGE_KEY_COUNT = 'pledge_count';
+  const STORAGE_KEY_VOTED = 'pledge_voted';
+
+  const POLLING_STATIONS = [
+    { name: 'Jyväskylä City Hall', address: 'Vapaudenkatu 32, 40100 Jyväskylä, Finland' },
+    { name: 'Central Library', address: 'Vapaudenkatu 39-41, 40100 Jyväskylä, Finland' },
+    { name: 'Lyseonmäki School', address: 'Yliopistonkatu 23, 40100 Jyväskylä, Finland' }
+  ];
+
+  /* ── Why section ── */
+  let expanded = false;
+  let barsAnimated = false;
+
+  function toggleWhy() {
+    expanded = !expanded;
+    const list = document.getElementById('whyList');
+    const btn = document.getElementById('expandBtn');
+    list.classList.toggle('open', expanded);
+    btn.textContent = expanded ? '−' : '+';
+    btn.setAttribute('aria-expanded', expanded);
+
+    if (expanded && !barsAnimated) {
+      barsAnimated = true;
+      setTimeout(() => {
+        document.querySelectorAll('.why-bar-fill').forEach(el => {
+          el.style.width = el.dataset.width + '%';
+        });
+      }, 60);
+    }
+  }
+
+  /* ── Map section ── */
+  async function findLocation() {
+    const addr = document.getElementById('addrInput').value.trim();
+    if (!addr) return;
+
+    const q = encodeURIComponent(addr + ', Jyväskylä, Finland');
+    document.getElementById('mapIframe').src = 'https://maps.google.com/maps?q=' + q + '&output=embed&z=15';
+    document.getElementById('mapContent').style.display = 'block';
+    document.getElementById('mapHint').style.display = 'none';
+
+    const sidebar = document.getElementById('locSidebar');
+    sidebar.innerHTML = '<div class="loading-text">Calculating distances...</div>';
+
+    const origin = encodeURIComponent(addr + ', Jyväskylä, Finland');
+    const destinations = POLLING_STATIONS.map(s => encodeURIComponent(s.address)).join('|');
+    const modes = ['walking', 'bicycling', 'transit'];
+    const modeLabels = ['walk', 'cycle', 'bus'];
+    const modeColors = ['#5dcaa5', '#378add', '#ef9f27'];
+
+    try {
+      const results = await Promise.all(modes.map(mode =>
+        fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destinations}&mode=${mode}&key=${API_KEY}`)
+          .then(r => r.json())
+      ));
+
+      const stationData = POLLING_STATIONS.map((station, i) => ({
+        name: station.name,
+        modes: modes.map((mode, mi) => {
+          const row = results[mi].rows?.[0]?.elements?.[i];
+          return { label: modeLabels[mi], color: modeColors[mi], dist: row?.distance?.text || '—', time: row?.duration?.text || '—' };
+        }),
+        walkMeters: results[0].rows?.[0]?.elements?.[i]?.distance?.value || 999999
+      }));
+
+      stationData.sort((a, b) => a.walkMeters - b.walkMeters);
+
+      sidebar.innerHTML = stationData.map((s, idx) => `
+        <div class="loc-card${idx === 0 ? ' best' : ''}">
+          ${idx === 0 ? '<div class="nearest-tag">Nearest</div>' : ''}
+          <div class="loc-name">${s.name}</div>
+          <div>${s.modes.map(m => `
+            <div class="badge">
+              <div class="badge-dot" style="background:${m.color}"></div>
+              ${m.dist} · ${m.time} ${m.label}
+            </div>`).join('')}
+          </div>
+        </div>`).join('');
+
+    } catch (e) {
+      sidebar.innerHTML = POLLING_STATIONS.map((s, i) => `
+        <div class="loc-card${i === 0 ? ' best' : ''}">
+          ${i === 0 ? '<div class="nearest-tag">Nearest (demo)</div>' : ''}
+          <div class="loc-name">${s.name}</div>
+          <div>
+            <div class="badge"><div class="badge-dot" style="background:#5dcaa5"></div>${[500,1100,1800][i]} m · ${[6,14,22][i]} min walk</div>
+            <div class="badge"><div class="badge-dot" style="background:#378add"></div>${[500,1100,1800][i]} m · ${[2,5,7][i]} min cycle</div>
+            <div class="badge"><div class="badge-dot" style="background:#ef9f27"></div>${[500,1100,1800][i]} m · ${[3,4,6][i]} min bus</div>
+          </div>
+        </div>`).join('');
+    }
+  }
+
+  /* ── Pledge / support ── */
+  function getCount() {
+    return parseInt(localStorage.getItem(STORAGE_KEY_COUNT) || BASE_COUNT, 10);
+  }
+  function hasVoted() {
+    return localStorage.getItem(STORAGE_KEY_VOTED) === 'true';
+  }
+  function renderPledge() {
+    const count = getCount();
+    const voted = hasVoted();
+    const btn = document.getElementById('pledgeBtn');
+    document.getElementById('pledgeCount').textContent = count + ' will vote for you';
+    if (voted) {
+      btn.classList.add('active');
+      btn.textContent = 'Thanks for your support!';
+    }
+  }
+
+  function pledge() {
+    if (hasVoted()) return;
+    const newCount = getCount() + 1;
+    localStorage.setItem(STORAGE_KEY_COUNT, newCount);
+    localStorage.setItem(STORAGE_KEY_VOTED, 'true');
+    renderPledge();
+  }
+
+  renderPledge();
+
+  document.getElementById('addrInput').addEventListener('keydown', e => { if (e.key === 'Enter') findLocation(); });
+
+  function updateHero() {
+    const img = document.getElementById('heroImg');
+    if (window.innerWidth <= 600) {
+      img.style.transform = '';
+      img.style.opacity = '';
+      const size = Math.max(60, 80 - window.scrollY / 6);
+      img.style.width = size + 'px';
+      img.style.height = size + 'px';
+      img.style.top = (7 + (80 - size) / 2) + 'px';
+    } else {
+      img.style.width = '';
+      img.style.height = '';
+      const s = Math.max(0.55, 1 - window.scrollY / 400);
+      img.style.transform = 'scale(' + s + ')';
+      img.style.opacity = Math.max(0.4, s);
+    }
+  }
+  window.addEventListener('scroll', updateHero, { passive: true });
+  window.addEventListener('resize', updateHero);
+  updateHero();
+</script>
+</body>
+</html>
