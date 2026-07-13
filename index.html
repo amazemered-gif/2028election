@@ -20,7 +20,7 @@
   .vote-text{font-size:15px;color:rgba(255,255,255,0.88);line-height:1.75}
   .vote-date{font-size:20px;font-weight:700;color:#fff;display:inline-block;margin:2px 0}
   .hero-anchor{width:140px;height:140px}
-  .hero-img{position:fixed;z-index:110;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.4)}
+  .hero-img{position:fixed;z-index:110;overflow:hidden;border:1px solid rgba(255,255,255,0.15)}
   .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
 
   /* Why section */
@@ -336,7 +336,7 @@
     const naturalTop = anchorTopPage - y;
     const top = Math.max(DOCK_TOP, naturalTop);
     const radius = size / 2;
-   
+
     img.style.width = size + 'px';
     img.style.height = size + 'px';
     img.style.top = top + 'px';
