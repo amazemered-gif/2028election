@@ -15,11 +15,12 @@
   .section-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px}
 
   /* Who can vote */
-  .vote-layout{display:grid;grid-template-columns:1fr 140px;gap:20px;align-items:start}
+  .header{padding-right:110px;min-height:94px}
+  .vote-layout{display:block}
   .vote-text{font-size:15px;color:rgba(255,255,255,0.88);line-height:1.75}
   .vote-date{font-size:20px;font-weight:700;color:#fff;display:inline-block;margin:2px 0}
-  .hero-img{border-radius:10px;overflow:hidden;transition:transform 0.4s,opacity 0.4s;transform-origin:top right}
-  .hero-img img{width:100%;height:auto;display:block}
+  .hero-img{position:fixed;top:7px;right:16px;width:80px;height:80px;z-index:110;border-radius:50%;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.4);transition:width 0.2s ease,height 0.2s ease,top 0.2s ease}
+  .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
 
   /* Why section */
   .expand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
@@ -72,10 +73,6 @@
   .soc svg{width:15px;height:15px;fill:rgba(255,255,255,0.6)}
 
   @media(max-width:600px){
-    .vote-layout{grid-template-columns:1fr}
-    .header{padding-right:98px;min-height:94px}
-    .hero-img{position:fixed;top:7px;right:16px;width:80px;height:80px;z-index:110;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,0.4);transition:width 0.2s ease,height 0.2s ease,top 0.2s ease}
-    .hero-img img{width:100%;height:100%;object-fit:cover}
     .map-layout{grid-template-columns:1fr}
     .loc-sidebar{flex-direction:row;overflow-x:auto}
     .loc-card{min-width:180px}
@@ -311,20 +308,10 @@
 
   function updateHero() {
     const img = document.getElementById('heroImg');
-    if (window.innerWidth <= 600) {
-      img.style.transform = '';
-      img.style.opacity = '';
-      const size = Math.max(60, 80 - window.scrollY / 6);
-      img.style.width = size + 'px';
-      img.style.height = size + 'px';
-      img.style.top = (7 + (80 - size) / 2) + 'px';
-    } else {
-      img.style.width = '';
-      img.style.height = '';
-      const s = Math.max(0.55, 1 - window.scrollY / 400);
-      img.style.transform = 'scale(' + s + ')';
-      img.style.opacity = Math.max(0.4, s);
-    }
+    const size = Math.max(44, 80 - window.scrollY / 6);
+    img.style.width = size + 'px';
+    img.style.height = size + 'px';
+    img.style.top = (7 + (80 - size) / 2) + 'px';
   }
   window.addEventListener('scroll', updateHero, { passive: true });
   window.addEventListener('resize', updateHero);
