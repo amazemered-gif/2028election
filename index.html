@@ -159,7 +159,7 @@
       </div>
     </div>
     <div class="api-note">
-      To enable live distances: replace <code>YOUR_API_KEY</code> in the &lt;script&gt; with your Google Maps API key (requires Distance Matrix API enabled).
+      To enable live distances: set a <code>GOOGLE_MAPS_API_KEY</code> environment variable in your Netlify site settings (requires Distance Matrix API enabled). The key is never exposed to visitors.
     </div>
   </div>
 </div>
@@ -184,7 +184,6 @@
 </div>
 
 <script>
-  const API_KEY = 'YOUR_API_KEY';
   const BASE_COUNT = 50; // starting count
   const STORAGE_KEY_COUNT = 'pledge_count';
   const STORAGE_KEY_VOTED = 'pledge_voted';
@@ -238,7 +237,7 @@
 
     try {
       const results = await Promise.all(modes.map(mode =>
-        fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destinations}&mode=${mode}&key=${API_KEY}`)
+        fetch(`/.netlify/functions/distance?origin=${origin}&destinations=${destinations}&mode=${mode}`)
           .then(r => r.json())
       ));
 
