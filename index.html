@@ -28,7 +28,9 @@
   .section-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px}
 
   /* Who can vote */
-  .header{padding-right:110px;min-height:94px}
+  .header{padding-right:110px;min-height:94px;flex-wrap:nowrap;gap:10px}
+  .header.lang-open{z-index:300}
+  .header-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .vote-layout{display:grid;grid-template-columns:1fr 140px;gap:20px;align-items:start}
   .vote-text{font-size:15px;color:rgba(255,255,255,0.88);line-height:1.75}
   .vote-date{font-size:20px;font-weight:700;color:#fff;display:inline-block;margin:2px 0}
@@ -325,8 +327,10 @@
 
   function toggleLangMenu() {
     const select = document.getElementById('langSelect');
+    const header = document.querySelector('.header');
     const btn = document.getElementById('langBtn');
     const open = select.classList.toggle('open');
+    header.classList.toggle('lang-open', open);
     btn.setAttribute('aria-expanded', open);
   }
 
@@ -335,13 +339,17 @@
     localStorage.setItem('site_lang', code);
     document.getElementById('langBtnLabel').textContent = LANGUAGES.find(l => l.code === code).label;
     document.getElementById('langSelect').classList.remove('open');
+    document.querySelector('.header').classList.remove('lang-open');
     renderLangMenu();
     applyTranslations();
   }
 
   document.addEventListener('click', (e) => {
     const select = document.getElementById('langSelect');
-    if (select && !select.contains(e.target)) select.classList.remove('open');
+    if (select && !select.contains(e.target)) {
+      select.classList.remove('open');
+      document.querySelector('.header').classList.remove('lang-open');
+    }
   });
 
   const STORAGE_KEY_VOTED = 'pledge_voted';
@@ -451,7 +459,11 @@
     try {
       const res = await fetch('/.netlify/functions/pledge');
       const data = await res.json();
-      renderPledgeCount(data.count);
+      if (res.ok && typeof data.count === 'number') {
+        renderPledgeCount(data.count);
+      } else {
+        document.getElementById('pledgeCount').textContent = '';
+      }
     } catch (e) {
       document.getElementById('pledgeCount').textContent = '';
     }
@@ -472,7 +484,9 @@
     try {
       const res = await fetch('/.netlify/functions/pledge', { method: 'POST' });
       const data = await res.json();
-      renderPledgeCount(data.count);
+      if (res.ok && typeof data.count === 'number') {
+        renderPledgeCount(data.count);
+      }
       localStorage.setItem(STORAGE_KEY_VOTED, 'true');
       btn.classList.add('active');
       btn.textContent = t('pledgeThanks');
