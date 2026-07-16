@@ -11,6 +11,19 @@
   .header{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:0.5px solid rgba(255,255,255,0.12)}
   .header-title{font-size:16px;font-weight:500;color:#fff;letter-spacing:0.3px}
 
+  /* Language selector */
+  .lang-select{position:relative;flex-shrink:0}
+  .lang-btn{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;padding:6px 2px}
+  .lang-globe{width:17px;height:17px;color:#3ddc84;flex-shrink:0}
+  .lang-chevron{width:13px;height:13px;color:rgba(255,255,255,0.55);transition:transform 0.2s;flex-shrink:0}
+  .lang-select.open .lang-chevron{transform:rotate(180deg)}
+  .lang-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#1c1c24;border:0.5px solid rgba(255,255,255,0.15);border-radius:10px;min-width:170px;padding:6px;box-shadow:0 10px 28px rgba(0,0,0,0.45);z-index:200;max-height:320px;overflow-y:auto}
+  .lang-select.open .lang-menu{display:block}
+  .lang-option{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13.5px;color:rgba(255,255,255,0.82);white-space:nowrap}
+  .lang-option:hover{background:rgba(255,255,255,0.09)}
+  .lang-option.selected{color:#3ddc84;font-weight:600}
+  .lang-flag{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+
   .section{background:rgba(255,255,255,0.07);margin:16px;border-radius:16px;border:0.5px solid rgba(255,255,255,0.14);padding:24px}
   .section-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:16px}
 
@@ -83,17 +96,25 @@
 <body>
 
 <div class="header">
-  <span class="header-title">2028 Local Election — Jyväskylä</span>
+  <span class="header-title" data-i18n="headerTitle">2028 Local Election — Jyväskylä</span>
+  <div class="lang-select" id="langSelect">
+    <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()" aria-haspopup="listbox" aria-expanded="false">
+      <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+      <span id="langBtnLabel">EN</span>
+      <svg class="lang-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="lang-menu" id="langMenu" role="listbox"></div>
+  </div>
 </div>
 
 <!-- WHO CAN VOTE -->
 <div class="section">
-  <div class="section-label">Who can vote?</div>
+  <div class="section-label" data-i18n="whoCanVote">Who can vote?</div>
   <div class="vote-layout">
     <div class="vote-text">
-      Anyone who has moved to Finland before<br>
-      <span class="vote-date">18th April 2026</span><br>
-      are eligible to vote in this election.
+      <span data-i18n="voteText1">Anyone who has moved to Finland before</span><br>
+      <span class="vote-date" data-i18n="voteDate">18th April 2026</span><br>
+      <span data-i18n="voteText2">are eligible to vote in this election.</span>
     </div>
     <div class="hero-anchor" id="heroAnchor"></div>
   </div>
@@ -106,35 +127,35 @@
 <!-- WHY PARTICIPATING -->
 <div class="section">
   <div class="expand-row">
-    <div class="section-label">Why participate?</div>
+    <div class="section-label" data-i18n="whyParticipate">Why participate?</div>
     <button class="expand-btn" id="expandBtn" onclick="toggleWhy()" aria-expanded="false" aria-controls="whyList">+</button>
   </div>
   <div class="why-list" id="whyList">
     <div class="why-item">
-      <span class="why-num">1. Rights of delivery riders. </span>
+      <span class="why-num" data-i18n="why1Num">1. Rights of delivery riders. </span>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Wolt</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px" data-i18n="why1Title">Wolt</div>
         <div class="why-bar-track"><div class="why-bar-fill" data-width="92"></div></div>
       </div>
     </div>
     <div class="why-item">
-      <span class="why-num">2. Integration speed up </span>
+      <span class="why-num" data-i18n="why2Num">2. Integration speed up </span>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Kototumis</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px" data-i18n="why2Title">Kototumis</div>
         <div class="why-bar-track"><div class="why-bar-fill" data-width="76"></div></div>
       </div>
     </div>
     <div class="why-item">
-      <span class="why-num">3. increase day care and education for kids </span>
+      <span class="why-num" data-i18n="why3Num">3. increase day care and education for kids </span>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Support for International Residents</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px" data-i18n="why3Title">Support for International Residents</div>
         <div class="why-bar-track"><div class="why-bar-fill" data-width="84"></div></div>
       </div>
     </div>
     <div class="why-item">
-      <span class="why-num">4.</span>
+      <span class="why-num" data-i18n="why4Num">4.</span>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:500;margin-bottom:6px">Affordable Housing Initiatives</div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:6px" data-i18n="why4Title">Affordable Housing Initiatives</div>
         <div class="why-bar-track"><div class="why-bar-fill" data-width="66"></div></div>
       </div>
     </div>
@@ -143,22 +164,22 @@
 
 <!-- WHERE TO VOTE -->
 <div class="section">
-  <div class="section-label">Where can I vote?</div>
+  <div class="section-label" data-i18n="whereCanIVote">Where can I vote?</div>
   <div class="map-row">
-    <input type="text" id="addrInput" placeholder="Type your address in Jyväskylä..." />
-    <button class="find-btn" onclick="findLocation()">Find</button>
+    <input type="text" id="addrInput" data-i18n-placeholder="addrPlaceholder" placeholder="Type your address in Jyväskylä..." />
+    <button class="find-btn" onclick="findLocation()" data-i18n="findBtn">Find</button>
   </div>
-  <div id="mapHint" class="map-hint">Enter your address to find your nearest polling station.</div>
+  <div id="mapHint" class="map-hint" data-i18n="mapHint">Enter your address to find your nearest polling station.</div>
   <div id="mapContent" style="display:none">
     <div class="map-layout">
       <div class="map-frame">
         <iframe id="mapIframe" src="" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
       <div class="loc-sidebar" id="locSidebar">
-        <div class="loading-text">Calculating distances...</div>
+        <div class="loading-text" data-i18n="loadingText">Calculating distances...</div>
       </div>
     </div>
-    <div class="api-note">
+    <div class="api-note" data-i18n-html="apiNoteHtml">
       To enable live distances: set a <code>GOOGLE_MAPS_API_KEY</code> environment variable in your Netlify site settings (requires Distance Matrix API enabled). The key is never exposed to visitors.
     </div>
   </div>
@@ -166,17 +187,17 @@
 
 <!-- SUPPORT -->
 <div class="section">
-  <div class="section-label">Show us your support</div>
+  <div class="section-label" data-i18n="showSupport">Show us your support</div>
   <div class="support-inner">
-    <div class="support-sub">Click the button to show your support</div>
-    <button class="pledge-btn" id="pledgeBtn" onclick="pledge()">I will vote for you</button>
+    <div class="support-sub" data-i18n="supportSub">Click the button to show your support</div>
+    <button class="pledge-btn" id="pledgeBtn" onclick="pledge()" data-i18n="pledgeBtn">I will vote for you</button>
     <div class="pledge-count" id="pledgeCount"></div>
   </div>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-  <span class="footer-label">Socials</span>
+  <span class="footer-label" data-i18n="socialsLabel">Socials</span>
   <div class="soc" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
   <div class="soc" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
   <div class="soc" title="X / Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
@@ -184,9 +205,147 @@
 </div>
 
 <script>
-  const BASE_COUNT = 10; // starting count
-  const STORAGE_KEY_COUNT = 'pledge_count';
+  /* ══ Language / i18n system ══
+     Only 'en' and 'fi' are fully translated for now — this is the plumbing,
+     proven working end-to-end. The rest fall back to English until real
+     translations are added once all page content is finalized. */
+
+  const LANGUAGES = [
+    { code: 'en', label: 'EN', name: 'English',    flag: '' },
+    { code: 'fi', label: 'FI', name: 'Suomi',      flag: '🇫🇮' },
+    { code: 'ne', label: 'NE', name: 'नेपाली',      flag: '🇳🇵' },
+    { code: 'bn', label: 'BN', name: 'বাংলা',       flag: '🇧🇩' },
+    { code: 'ur', label: 'UR', name: 'اردو',        flag: '🇵🇰' },
+    { code: 'hi', label: 'HI', name: 'हिन्दी',       flag: '🇮🇳' },
+    { code: 'si', label: 'SI', name: 'සිංහල',       flag: '🇱🇰' },
+    { code: 'vi', label: 'VI', name: 'Tiếng Việt',  flag: '🇻🇳' },
+    { code: 'tl', label: 'PH', name: 'Filipino',    flag: '🇵🇭' }
+  ];
+
+  const TRANSLATIONS = {
+    en: {
+      headerTitle: '2028 Local Election — Jyväskylä',
+      whoCanVote: 'Who can vote?',
+      voteText1: 'Anyone who has moved to Finland before',
+      voteDate: '18th April 2026',
+      voteText2: 'are eligible to vote in this election.',
+      whyParticipate: 'Why participate?',
+      why1Num: '1. Rights of delivery riders. ',
+      why1Title: 'Wolt',
+      why2Num: '2. Integration speed up ',
+      why2Title: 'Kototumis',
+      why3Num: '3. increase day care and education for kids ',
+      why3Title: 'Support for International Residents',
+      why4Num: '4.',
+      why4Title: 'Affordable Housing Initiatives',
+      whereCanIVote: 'Where can I vote?',
+      addrPlaceholder: 'Type your address in Jyväskylä...',
+      findBtn: 'Find',
+      mapHint: 'Enter your address to find your nearest polling station.',
+      loadingText: 'Calculating distances...',
+      apiNoteHtml: 'To enable live distances: set a <code>GOOGLE_MAPS_API_KEY</code> environment variable in your Netlify site settings (requires Distance Matrix API enabled). The key is never exposed to visitors.',
+      showSupport: 'Show us your support',
+      supportSub: 'Click the button to show your support',
+      pledgeBtn: 'I will vote for you',
+      pledgeThanks: 'Thanks for your support!',
+      pledgeCountSuffix: 'will vote for you',
+      socialsLabel: 'Socials',
+      nearest: 'Nearest',
+      nearestDemo: 'Nearest (demo)',
+      walk: 'walk',
+      cycle: 'cycle',
+      bus: 'bus'
+    },
+    fi: {
+      headerTitle: 'Kunnallisvaalit 2028 — Jyväskylä',
+      whoCanVote: 'Kuka voi äänestää?',
+      voteText1: 'Kaikki, jotka ovat muuttaneet Suomeen ennen',
+      voteDate: '18. huhtikuuta 2026',
+      voteText2: 'voivat äänestää tässä vaalissa.',
+      whyParticipate: 'Miksi osallistua?',
+      why1Num: '1. Kuljetuslähettien oikeudet. ',
+      why1Title: 'Wolt',
+      why2Num: '2. Kotoutumisen nopeuttaminen ',
+      why2Title: 'Kotoutuminen',
+      why3Num: '3. Lisää päivähoitoa ja koulutusta lapsille ',
+      why3Title: 'Tuki kansainvälisille asukkaille',
+      why4Num: '4.',
+      why4Title: 'Kohtuuhintaisen asumisen aloitteet',
+      whereCanIVote: 'Missä voin äänestää?',
+      addrPlaceholder: 'Kirjoita osoitteesi Jyväskylässä...',
+      findBtn: 'Hae',
+      mapHint: 'Syötä osoitteesi löytääksesi lähimmän äänestyspaikan.',
+      loadingText: 'Lasketaan etäisyyksiä...',
+      apiNoteHtml: 'Ottaaksesi käyttöön reaaliaikaiset etäisyydet: aseta <code>GOOGLE_MAPS_API_KEY</code> -ympäristömuuttuja Netlify-sivustosi asetuksissa (vaatii Distance Matrix API:n). Avain ei koskaan näy vierailijoille.',
+      showSupport: 'Näytä tukesi',
+      supportSub: 'Napsauta painiketta näyttääksesi tukesi',
+      pledgeBtn: 'Äänestän sinua',
+      pledgeThanks: 'Kiitos tuestasi!',
+      pledgeCountSuffix: 'äänestää sinua',
+      socialsLabel: 'Somekanavat',
+      nearest: 'Lähin',
+      nearestDemo: 'Lähin (demo)',
+      walk: 'kävely',
+      cycle: 'pyöräily',
+      bus: 'bussi'
+    },
+    // Placeholders — fall back to English (via t()) until translated for real.
+    ne: {}, bn: {}, ur: {}, hi: {}, si: {}, vi: {}, tl: {}
+  };
+
+  let currentLang = localStorage.getItem('site_lang') || 'en';
+
+  function t(key) {
+    const val = TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key];
+    return val !== undefined ? val : TRANSLATIONS.en[key];
+  }
+
+  function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+    });
+    document.documentElement.lang = currentLang;
+    renderPledgeButtonState();
+    if (lastPledgeCount !== null) renderPledgeCount(lastPledgeCount);
+  }
+
+  function renderLangMenu() {
+    const menu = document.getElementById('langMenu');
+    menu.innerHTML = LANGUAGES.map(l => `
+      <div class="lang-option${l.code === currentLang ? ' selected' : ''}" role="option" onclick="selectLang('${l.code}')">
+        <span class="lang-flag">${l.flag}</span><span>${l.name}</span>
+      </div>`).join('');
+  }
+
+  function toggleLangMenu() {
+    const select = document.getElementById('langSelect');
+    const btn = document.getElementById('langBtn');
+    const open = select.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  }
+
+  function selectLang(code) {
+    currentLang = code;
+    localStorage.setItem('site_lang', code);
+    document.getElementById('langBtnLabel').textContent = LANGUAGES.find(l => l.code === code).label;
+    document.getElementById('langSelect').classList.remove('open');
+    renderLangMenu();
+    applyTranslations();
+  }
+
+  document.addEventListener('click', (e) => {
+    const select = document.getElementById('langSelect');
+    if (select && !select.contains(e.target)) select.classList.remove('open');
+  });
+
   const STORAGE_KEY_VOTED = 'pledge_voted';
+  let lastPledgeCount = null;
 
   const POLLING_STATIONS = [
     { name: 'Jyväskylä City Hall', address: 'Vapaudenkatu 32, 40100 Jyväskylä, Finland' },
@@ -227,12 +386,12 @@
     document.getElementById('mapHint').style.display = 'none';
 
     const sidebar = document.getElementById('locSidebar');
-    sidebar.innerHTML = '<div class="loading-text">Calculating distances...</div>';
+    sidebar.innerHTML = `<div class="loading-text">${t('loadingText')}</div>`;
 
     const origin = encodeURIComponent(addr + ', Jyväskylä, Finland');
     const destinations = POLLING_STATIONS.map(s => encodeURIComponent(s.address)).join('|');
     const modes = ['walking', 'bicycling', 'transit'];
-    const modeLabels = ['walk', 'cycle', 'bus'];
+    const modeKeys = ['walk', 'cycle', 'bus'];
     const modeColors = ['#5dcaa5', '#378add', '#ef9f27'];
 
     try {
@@ -245,7 +404,7 @@
         name: station.name,
         modes: modes.map((mode, mi) => {
           const row = results[mi].rows?.[0]?.elements?.[i];
-          return { label: modeLabels[mi], color: modeColors[mi], dist: row?.distance?.text || '—', time: row?.duration?.text || '—' };
+          return { label: t(modeKeys[mi]), color: modeColors[mi], dist: row?.distance?.text || '—', time: row?.duration?.text || '—' };
         }),
         walkMeters: results[0].rows?.[0]?.elements?.[i]?.distance?.value || 999999
       }));
@@ -254,7 +413,7 @@
 
       sidebar.innerHTML = stationData.map((s, idx) => `
         <div class="loc-card${idx === 0 ? ' best' : ''}">
-          ${idx === 0 ? '<div class="nearest-tag">Nearest</div>' : ''}
+          ${idx === 0 ? `<div class="nearest-tag">${t('nearest')}</div>` : ''}
           <div class="loc-name">${s.name}</div>
           <div>${s.modes.map(m => `
             <div class="badge">
@@ -267,46 +426,70 @@
     } catch (e) {
       sidebar.innerHTML = POLLING_STATIONS.map((s, i) => `
         <div class="loc-card${i === 0 ? ' best' : ''}">
-          ${i === 0 ? '<div class="nearest-tag">Nearest (demo)</div>' : ''}
+          ${i === 0 ? `<div class="nearest-tag">${t('nearestDemo')}</div>` : ''}
           <div class="loc-name">${s.name}</div>
           <div>
-            <div class="badge"><div class="badge-dot" style="background:#5dcaa5"></div>${[500,1100,1800][i]} m · ${[6,14,22][i]} min walk</div>
-            <div class="badge"><div class="badge-dot" style="background:#378add"></div>${[500,1100,1800][i]} m · ${[2,5,7][i]} min cycle</div>
-            <div class="badge"><div class="badge-dot" style="background:#ef9f27"></div>${[500,1100,1800][i]} m · ${[3,4,6][i]} min bus</div>
+            <div class="badge"><div class="badge-dot" style="background:#5dcaa5"></div>${[500,1100,1800][i]} m · ${[6,14,22][i]} min ${t('walk')}</div>
+            <div class="badge"><div class="badge-dot" style="background:#378add"></div>${[500,1100,1800][i]} m · ${[2,5,7][i]} min ${t('cycle')}</div>
+            <div class="badge"><div class="badge-dot" style="background:#ef9f27"></div>${[500,1100,1800][i]} m · ${[3,4,6][i]} min ${t('bus')}</div>
           </div>
         </div>`).join('');
     }
   }
 
   /* ── Pledge / support ── */
-  function getCount() {
-    return parseInt(localStorage.getItem(STORAGE_KEY_COUNT) || BASE_COUNT, 10);
-  }
   function hasVoted() {
     return localStorage.getItem(STORAGE_KEY_VOTED) === 'true';
   }
-  function renderPledge() {
-    const count = getCount();
-    const voted = hasVoted();
-    const btn = document.getElementById('pledgeBtn');
-    document.getElementById('pledgeCount').textContent = count + ' will vote for you';
-    if (voted) {
-      btn.classList.add('active');
-      btn.textContent = 'Thanks for your support!';
+
+  function renderPledgeCount(count) {
+    lastPledgeCount = count;
+    document.getElementById('pledgeCount').textContent = count + ' ' + t('pledgeCountSuffix');
+  }
+
+  async function loadPledgeCount() {
+    try {
+      const res = await fetch('/.netlify/functions/pledge');
+      const data = await res.json();
+      renderPledgeCount(data.count);
+    } catch (e) {
+      document.getElementById('pledgeCount').textContent = '';
     }
   }
 
-  function pledge() {
-    if (hasVoted()) return;
-    const newCount = getCount() + 1;
-    localStorage.setItem(STORAGE_KEY_COUNT, newCount);
-    localStorage.setItem(STORAGE_KEY_VOTED, 'true');
-    renderPledge();
+  function renderPledgeButtonState() {
+    const btn = document.getElementById('pledgeBtn');
+    if (hasVoted()) {
+      btn.classList.add('active');
+      btn.textContent = t('pledgeThanks');
+    }
   }
 
-  renderPledge();
+  async function pledge() {
+    if (hasVoted()) return;
+    const btn = document.getElementById('pledgeBtn');
+    btn.disabled = true;
+    try {
+      const res = await fetch('/.netlify/functions/pledge', { method: 'POST' });
+      const data = await res.json();
+      renderPledgeCount(data.count);
+      localStorage.setItem(STORAGE_KEY_VOTED, 'true');
+      btn.classList.add('active');
+      btn.textContent = t('pledgeThanks');
+    } catch (e) {
+      btn.disabled = false;
+    }
+  }
+
+  renderPledgeButtonState();
+  loadPledgeCount();
 
   document.getElementById('addrInput').addEventListener('keydown', e => { if (e.key === 'Enter') findLocation(); });
+
+  /* ── i18n init ── */
+  document.getElementById('langBtnLabel').textContent = LANGUAGES.find(l => l.code === currentLang).label;
+  renderLangMenu();
+  applyTranslations();
 
   /* ── Hero image scroll transition ── */
   const SHRINK_DISTANCE = 220;   // px of scroll over which it fully shrinks & docks
